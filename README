@@ -1,0 +1,47 @@
+This repository contains code for shower and sound operation via raspberry pi
+
+
+Button for only shower operation
+button for shower / music / discoball
+
+gpio in button on off
+gpio in change song
+
+gpio out shower relay
+gpio out amp relay?
+gpio out disco ball relay
+gpio out light relay
+headphone jack out music
+
+Initialize all gpio to off
+Initialize random song
+
+while(true)
+
+    Check state of change song button
+        if true and was false
+            change song index
+            set new song flag to true
+
+    Check state of on off button
+        if off and was off
+            end   
+        if off and was on
+            all gpio off
+            stop song
+            end
+        if on and was off    
+            all gpio on
+            start song
+        if on and was on
+            if new song flag == true
+                stop old song
+                start new song
+
+
+
+Functions
+
+Initialize audio track list
+set gpio states
+play new audio track
