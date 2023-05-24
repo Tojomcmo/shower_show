@@ -1,9 +1,8 @@
-import pygame
 import random
 import gpiozero as gpio
 import time
 from os import listdir
-
+from pygame import mixer
 
 def pick_rand_new_song(song_enum_list, prev_song_enum):
     if len(song_enum_list) == 1:
@@ -24,6 +23,16 @@ def button_press_filter(button, filter, pass_criterion, state):
         state = True
     return state, filter     
 
+def get_song_path():
+    return 'song_list/' + str(song_names_list[song_enum])
+
+def start_song():
+    mixer.music.stop()
+    mixer.music.load(get_song_path())
+    mixer.music.play()
+    return
+
+
 #define GPIOs
 on_off_button      = gpio.Button("GPIO17")
 song_change_button = gpio.Button("GPIO18")
@@ -36,6 +45,13 @@ disco_relay        = gpio.DigitalOutputDevice("GPIO23")
 song_names_list = listdir("song_list")
 song_enum_list  = list(range(0,len(song_names_list)))
 song_enum       = random.sample(song_enum_list,1)[0]
+# initiate music mixer
+# song_thread = mixer.init()
+# song_thread.music.load("song_list/", str(song_names_list[song_enum]))
+mixer.init()
+song_str = get_song_path()
+mixer.music.load(song_str)
+mixer.music.set_volume(0.5)
 
 # create button filters
 song_button_filter = [0] * 30
@@ -73,27 +89,30 @@ while(True):
             shower_relay.on()
             amp_relay.on()
             disco_relay.on()
-            if change_song_flag:
-                song_enum = pick_rand_new_song(song_enum_list, song_enum)
-                change_song_flag = False
+            song_enum = pick_rand_new_song(song_enum_list, song_enum)
+            start_song()
+            change_song_flag = False
         else:
             if change_song_flag:
                 song_enum = pick_rand_new_song(song_enum_list, song_enum)
+                start_song()
                 change_song_flag = False
         prev_pressed_on_off = True
     else:
         shower_relay.off()
         amp_relay.off()
         disco_relay.off()
+        mixer.music.stop()
         prev_pressed_on_off = False    
 
     time_elapsed = time.time() - t1 
     if time_elapsed > print_time:
-        print("songflag  ,  song  ,  song_prev_press  , is on: ", 
+        print("chg_song_flag  ,  song_num  ,  song_btn  , pwr_btn  , music_state:  ", 
               change_song_flag, " , ", 
               song_enum, " , ", 
               prev_pressed_song_change, "  ,  ",
-              prev_pressed_on_off)
+              prev_pressed_on_off, "  ,  ",
+              mixer.music.get_busy())
         # print("current song: ", song_enum)
         # print("is on: ", prev_pressed_on_off)
         t1 = time.time()
