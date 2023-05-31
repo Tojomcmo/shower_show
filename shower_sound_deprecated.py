@@ -32,7 +32,6 @@ def start_song(name_list, enum):
     mixer.music.play()
     return
 
-
 #define GPIO inputs
 power_button       = gpio.Button("GPIO17")
 song_change_button = gpio.Button("GPIO18")
