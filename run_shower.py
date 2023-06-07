@@ -22,8 +22,8 @@ if __name__ == "__main__":
     mixer.music.set_volume(1.0)
 
     power_state_btn = 17
-    song_change_btn = 18
-    hard_kill_btn   = 24
+    song_change_btn = 25
+    hard_kill_btn   = 18
     GPIO.setup(power_state_btn, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
     GPIO.setup(song_change_btn, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
     GPIO.setup(hard_kill_btn, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
@@ -82,7 +82,8 @@ if __name__ == "__main__":
         GPIO.cleanup()
 
 
-    except RuntimeError:
-        print("cleaning up GPIOs with except from kill button")
+    except RuntimeError as err:
+        print(err.args)
+        print("cleaning up GPIOs")
         GPIO.cleanup()
 
