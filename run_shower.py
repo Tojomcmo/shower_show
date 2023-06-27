@@ -21,9 +21,9 @@ if __name__ == "__main__":
     mixer.music.load(song_str)
     mixer.music.set_volume(1.0)
 
-    power_state_btn = 17
+    power_state_btn = 18
     song_change_btn = 25
-    hard_kill_btn   = 18
+    hard_kill_btn   = 17
     GPIO.setup(power_state_btn, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
     GPIO.setup(song_change_btn, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
     GPIO.setup(hard_kill_btn, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
