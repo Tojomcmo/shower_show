@@ -51,10 +51,10 @@ if __name__ == "__main__":
     CHANGE_SHOWER_FLAG       = False
 
     # set print scheduele
-    print_time  = 0.2
+    print_time  = 1
     t1          = time.time()
     # set shower duration for button press
-    shower_duration_time = 5
+    shower_duration_time = 30
     shower_start_time = time.time()
     try:
         while(True):

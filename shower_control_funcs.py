@@ -79,7 +79,8 @@ def set_shower_state(POWER_STATE,
                 SHOWER_CHANGE_FLAG = False
                 shower_start_time = time.time()        
         elif SHOWER_STATE:
-            if SHOWER_CHANGE_FLAG or (shower_start_time - shower_duration_time >= 0):
+            elapsed_time = time.time() - shower_start_time
+            if SHOWER_CHANGE_FLAG or (elapsed_time > shower_duration_time):
                 GPIO.output(GPIO_output_pin, 0)
                 SHOWER_STATE = False
                 SHOWER_CHANGE_FLAG = False
