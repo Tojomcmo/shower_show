@@ -33,15 +33,14 @@ def button_press_filter(button_val:int, filt:list, pass_criterion:float, STATE:b
         STATE = True
     return STATE, filt
 
-def set_change_song_flag(SONG_BUTTON_STATE, PREV_PRESSED_SONG_CHANGE, CHANGE_SONG_FLAG):
-    if SONG_BUTTON_STATE:
-        if not PREV_PRESSED_SONG_CHANGE:
-            CHANGE_SONG_FLAG = True
-        PREV_PRESSED_SONG_CHANGE = True
+def set_flag(BTN_STATE, PREV_PRESSED_BTN, FLAG_STATE):
+    if BTN_STATE:
+        if not PREV_PRESSED_BTN:
+            FLAG_STATE = True
+        PREV_PRESSED_BTN = True
     else:
-        PREV_PRESSED_SONG_CHANGE = False
-    return CHANGE_SONG_FLAG, PREV_PRESSED_SONG_CHANGE
-
+        PREV_PRESSED_BTN = False
+    return FLAG_STATE, PREV_PRESSED_BTN
 
 def set_song_state(POWER_STATE, PREV_POWER_STATE, CHANGE_SONG_FLAG, song_names_list, song_enum_list, song_enum):
     # power state logic
@@ -66,8 +65,36 @@ def set_song_state(POWER_STATE, PREV_POWER_STATE, CHANGE_SONG_FLAG, song_names_l
         CHANGE_SONG_FLAG = False
     return PREV_POWER_STATE, CHANGE_SONG_FLAG, song_enum
 
+def set_shower_state(POWER_STATE, 
+                     SHOWER_STATE,
+                     SHOWER_CHANGE_FLAG,
+                     GPIO_output_pin,
+                     shower_start_time,
+                     shower_duration_time):
+    if POWER_STATE:
+        if not SHOWER_STATE:
+            if SHOWER_CHANGE_FLAG:
+                GPIO.output(GPIO_output_pin, 1)
+                SHOWER_STATE = True
+                SHOWER_CHANGE_FLAG = False
+                shower_start_time = time.time()        
+        elif SHOWER_STATE:
+            if SHOWER_CHANGE_FLAG or (shower_start_time - shower_duration_time >= 0):
+                GPIO.output(GPIO_output_pin, 0)
+                SHOWER_STATE = False
+                SHOWER_CHANGE_FLAG = False
+    else:
+        SHOWER_STATE = False
+        GPIO.output(GPIO_output_pin, 0)
+    return SHOWER_STATE, SHOWER_CHANGE_FLAG, shower_start_time
 
-def print_state(t1, print_time, CHANGE_SONG_FLAG,song_enum,PREV_PRESSED_SONG_CHANGE,PREV_PRESSED_POWER):
+
+def print_state(t1, 
+                print_time, 
+                CHANGE_SONG_FLAG,
+                song_enum,
+                PREV_PRESSED_SONG_CHANGE,
+                PREV_PRESSED_POWER):
     time_elapsed = time.time() - t1
     if time_elapsed > print_time:
         print("chg_song_flag  ,  song_num  ,  song_btn  , pwr_btn  , music_state:  ",
