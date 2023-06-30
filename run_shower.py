@@ -11,43 +11,60 @@ import music_control_funcs as mcf
 if __name__ == "__main__":
     GPIO.setmode(GPIO.BCM)
 
-    ## open directory of songs, pick initial song
-    music_dict = mcf.create_music_dictionaries('playlist_dir')
-    current_playlist, current_song = mcf.initialize_playlist_and_song(music_dict)
+    #------ Define system parameters ------#
+    # define music directory top folder name
+    music_library = 'playlist_dir'
 
-    # initiate music mixer
-    mixer.init()
-    song_path  = mcf.get_song_path(current_playlist, current_song)
-    mixer.music.load(song_path)
-    mixer.music.set_volume(1.0)
-
+    # define GPIO pins
     power_state_btn = 24
     shower_start_btn = 23
     song_change_btn = 18
     playlist_change_btn = 12
     shower_relay_out = 25
     hard_kill_btn   = 17
+
+    # Define button press filter length and deadzone cutoff
+    button_press_filt_len = 30
+    btn_deadzone = 0.9
+
+    # define CLI print delay and enable bool
+    CLI_PRINT_ENABLED = True
+    print_delay_time = 0.2
+
+    #define shower duration in seconds
+    shower_duration_time = 30
+
+    ## open directory of songs, pick initial song
+    music_dict = mcf.create_music_dictionary(music_library)
+    current_playlist, current_song, played_song_list = mcf.initialize_playlist_and_song(music_dict)
+
+    # initialize music mixer
+    mixer.init()
+    song_path  = mcf.get_song_path(music_library, current_playlist, current_song)
+    mixer.music.load(song_path)
+    mixer.music.set_volume(1.0)
+
+    #initialize GPIOs
     GPIO.setup(power_state_btn, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
     GPIO.setup(song_change_btn, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
     GPIO.setup(playlist_change_btn, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)   
     GPIO.setup(shower_start_btn, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
     GPIO.setup(hard_kill_btn, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-
     GPIO.setup(shower_relay_out, GPIO.OUT)
     GPIO.output(shower_relay_out, 0)
-    # create button filters
-    song_btn_filt      = [0] * 30
-    playlist_btn_filt  = [0] * 30
-    power_btn_filt     = [0] * 30
-    shower_btn_filt    = [0] * 30
+
+    # initialize button filters and bool values
+    song_btn_filt      = [0] * button_press_filt_len
+    playlist_btn_filt  = [0] * button_press_filt_len
+    power_btn_filt     = [0] * button_press_filt_len
+    shower_btn_filt    = [0] * button_press_filt_len
     SONG_BTN_STATE     = False
     PLAYLIST_BTN_STATE = False
     POWER_BTN_STATE    = False
     SHOWER_BTN_STATE   = False
     SHOWER_STATE       = False
-    btn_deadzone       = 0.9
 
-    # define logic states
+    # initialize logic states
     PREV_SONG_BTN_STATE      = False
     PREV_PLAYLIST_BTN_STATE  = False
     PREV_POWER_BTN_STATE     = False
@@ -56,12 +73,10 @@ if __name__ == "__main__":
     CHANGE_PLAYLIST_FLAG     = False
     CHANGE_SHOWER_FLAG       = False
 
-    # set print scheduele
-    print_time  = 0.2
-    t1          = time.time()
-    # set shower duration for button press
-    shower_duration_time = 30
+    # start timers
+    print_time  = time.time()
     shower_start_time = time.time()
+
     try:
         while(True):
             if GPIO.input(hard_kill_btn):
@@ -105,8 +120,10 @@ if __name__ == "__main__":
                                                                                                                                 CHANGE_SONG_FLAG,
                                                                                                                                 CHANGE_PLAYLIST_FLAG,
                                                                                                                                 music_dict,
+                                                                                                                                music_library,
                                                                                                                                 current_playlist,
-                                                                                                                                current_song)
+                                                                                                                                current_song,
+                                                                                                                                played_song_list)
                 
                 SHOWER_STATE, CHANGE_SHOWER_FLAG, shower_start_time = scf.set_shower_state(POWER_BTN_STATE,
                                                                                             SHOWER_STATE,
@@ -114,15 +131,15 @@ if __name__ == "__main__":
                                                                                             shower_relay_out,
                                                                                             shower_start_time,
                                                                                             shower_duration_time)
-
-                t1 = scf.print_state(t1, 
-                                    print_time, 
-                                    SONG_BTN_STATE,
-                                    PLAYLIST_BTN_STATE,
-                                    POWER_BTN_STATE,
-                                    SHOWER_BTN_STATE,
-                                    current_song,
-                                    current_playlist)
+                if CLI_PRINT_ENABLED:
+                    t1 = scf.print_state(print_time,
+                                        print_delay_time,
+                                        SONG_BTN_STATE,
+                                        PLAYLIST_BTN_STATE,
+                                        POWER_BTN_STATE,
+                                        SHOWER_BTN_STATE,
+                                        current_song,
+                                        current_playlist)
 
     except KeyboardInterrupt:
         print("cleaning up GPIOs with except from keyboard interrupt")
