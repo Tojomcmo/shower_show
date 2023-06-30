@@ -19,7 +19,11 @@ def get_next_playlist_and_first_song(music_dict, current_playlist):
     music_dict_iter = iter(music_dict)
     for key in music_dict_iter:
         if key == current_playlist:
-            next_playlist = next(music_dict_iter, None)
+            temp_playlist = next(music_dict_iter, None)         
+            if temp_playlist == None:
+                next_playlist = next(iter(music_dict))
+            else:
+                next_playlist = temp_playlist
     next_song = music_dict[next_playlist][0]  
     return next_playlist, next_song
 

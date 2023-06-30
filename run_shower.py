@@ -23,12 +23,13 @@ if __name__ == "__main__":
 
     power_state_btn = 18
     song_change_btn = 25
-    playlist_change_btn = 27
+    playlist_change_btn = 17
     shower_start_btn = 24
     shower_relay_out = 23
-    hard_kill_btn   = 17
+    hard_kill_btn   = 27
     GPIO.setup(power_state_btn, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
     GPIO.setup(song_change_btn, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+    GPIO.setup(playlist_change_btn, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)   
     GPIO.setup(shower_start_btn, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
     GPIO.setup(hard_kill_btn, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
@@ -48,6 +49,7 @@ if __name__ == "__main__":
 
     # define logic states
     PREV_SONG_BTN_STATE      = False
+    PREV_PLAYLIST_BTN_STATE  = False
     PREV_POWER_BTN_STATE     = False
     PREV_SHOWER_BTN_STATE    = False
     CHANGE_SONG_FLAG         = False
@@ -90,11 +92,15 @@ if __name__ == "__main__":
                                                                     PREV_SONG_BTN_STATE,
                                                                     CHANGE_SONG_FLAG)
 
+                CHANGE_PLAYLIST_FLAG, PREV_PLAYLIST_BTN_STATE = scf.set_flag(PLAYLIST_BTN_STATE,
+                                                                            PREV_PLAYLIST_BTN_STATE,
+                                                                            CHANGE_PLAYLIST_FLAG)
+                
                 CHANGE_SHOWER_FLAG, PREV_SHOWER_BTN_STATE = scf.set_flag(SHOWER_BTN_STATE,
                                                                         PREV_SHOWER_BTN_STATE,
                                                                         CHANGE_SHOWER_FLAG)
 
-                PREV_POWER_BTN_STATE, CHANGE_SONG_FLAG, CHANGE_PLAYLIST_FLAG, current_playlist, current_song = scf.set_song_state(POWER_BTN_STATE,
+                PREV_POWER_BTN_STATE, CHANGE_SONG_FLAG, CHANGE_PLAYLIST_FLAG, current_playlist, current_song = mcf.set_song_state(POWER_BTN_STATE,
                                                                                                                                 PREV_POWER_BTN_STATE,
                                                                                                                                 CHANGE_SONG_FLAG,
                                                                                                                                 CHANGE_PLAYLIST_FLAG,
