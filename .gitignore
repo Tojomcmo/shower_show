@@ -1,3 +1,4 @@
 song_list/*
+playlist_dir/*
 .venv/
 __pycache__
