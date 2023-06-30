@@ -49,17 +49,25 @@ def set_shower_state(POWER_STATE,
 
 def print_state(t1, 
                 print_time, 
-                CHANGE_SONG_FLAG,
-                song_enum,
-                PREV_PRESSED_SONG_CHANGE,
-                PREV_PRESSED_POWER):
+                SONG_BTN_STATE,
+                PLAYLIST_BTN_STATE,
+                POWER_BTN_STATE,
+                SHOWER_BTN_STATE,
+                current_song,
+                current_playlist):
     time_elapsed = time.time() - t1
     if time_elapsed > print_time:
-        print("chg_song_flag  ,  song_num  ,  song_btn  , pwr_btn  , music_state:  ",
-            CHANGE_SONG_FLAG, " , ",
-            song_enum, " , ",
-            PREV_PRESSED_SONG_CHANGE, "  ,  ",
-            PREV_PRESSED_POWER, "  ,  ",
-            mixer.music.get_busy())
+        print("SG_btn_st:",
+              SONG_BTN_STATE,", ",
+              "PL_btn_st:",
+              PLAYLIST_BTN_STATE,", ",
+              "PWR_btn_st:",
+              POWER_BTN_STATE,", ",
+              "SH_btn_st:",
+              SHOWER_BTN_STATE,", ",
+              "PList:",
+              current_playlist,", ",
+              "Song:",
+              current_song,", ")
         t1 = time.time()
     return t1    

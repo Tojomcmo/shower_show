@@ -21,12 +21,12 @@ if __name__ == "__main__":
     mixer.music.load(song_path)
     mixer.music.set_volume(1.0)
 
-    power_state_btn = 18
-    song_change_btn = 25
-    playlist_change_btn = 17
-    shower_start_btn = 24
-    shower_relay_out = 23
-    hard_kill_btn   = 27
+    power_state_btn = 24
+    shower_start_btn = 23
+    song_change_btn = 18
+    playlist_change_btn = 12
+    shower_relay_out = 25
+    hard_kill_btn   = 17
     GPIO.setup(power_state_btn, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
     GPIO.setup(song_change_btn, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
     GPIO.setup(playlist_change_btn, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)   
@@ -60,7 +60,7 @@ if __name__ == "__main__":
     print_time  = 0.2
     t1          = time.time()
     # set shower duration for button press
-    shower_duration_time = 5
+    shower_duration_time = 30
     shower_start_time = time.time()
     try:
         while(True):
@@ -117,10 +117,12 @@ if __name__ == "__main__":
 
                 t1 = scf.print_state(t1, 
                                     print_time, 
-                                    CHANGE_SONG_FLAG,
+                                    SONG_BTN_STATE,
+                                    PLAYLIST_BTN_STATE,
+                                    POWER_BTN_STATE,
+                                    SHOWER_BTN_STATE,
                                     current_song,
-                                    PREV_SONG_BTN_STATE,
-                                    PREV_POWER_BTN_STATE)
+                                    current_playlist)
 
     except KeyboardInterrupt:
         print("cleaning up GPIOs with except from keyboard interrupt")
