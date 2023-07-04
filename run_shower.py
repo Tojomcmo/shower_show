@@ -13,7 +13,8 @@ if __name__ == "__main__":
 
     #------ Define system parameters ------#
     # define music directory top folder name
-    music_library = 'playlist_dir'
+    #music_library = 'playlist_dir'
+    music_library = '/home/pi/playlist_dir'
 
     # define GPIO pins
     power_state_btn = 24
@@ -24,7 +25,7 @@ if __name__ == "__main__":
     hard_kill_btn   = 17
 
     # Define button press filter length and deadzone cutoff
-    button_press_filt_len = 30
+    button_press_filt_len = 20
     btn_deadzone = 0.9
 
     # define CLI print delay and enable bool
@@ -115,7 +116,7 @@ if __name__ == "__main__":
                                                                         PREV_SHOWER_BTN_STATE,
                                                                         CHANGE_SHOWER_FLAG)
 
-                PREV_POWER_BTN_STATE, CHANGE_SONG_FLAG, CHANGE_PLAYLIST_FLAG, current_playlist, current_song = mcf.set_song_state(POWER_BTN_STATE,
+                PREV_POWER_BTN_STATE, CHANGE_SONG_FLAG, CHANGE_PLAYLIST_FLAG, current_playlist, current_song, played_song_list = mcf.set_song_state(POWER_BTN_STATE,
                                                                                                                                 PREV_POWER_BTN_STATE,
                                                                                                                                 CHANGE_SONG_FLAG,
                                                                                                                                 CHANGE_PLAYLIST_FLAG,

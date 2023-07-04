@@ -7,9 +7,11 @@ def create_music_dictionary(library_name:str):
     # and returns a dictionary with key of playlist name and value of the
     # requisite list of song names
     playlist_names_list = listdir(library_name)
+    playlist_names_list.sort()
     music_dict = {}
     for playlist in playlist_names_list:
         song_names_list = listdir(library_name + '/' + playlist)
+        song_names_list.sort()
         music_dict[playlist] = song_names_list
     return music_dict
 
@@ -120,4 +122,4 @@ def set_song_state(POWER_STATE:bool,
         PREV_POWER_STATE = False
         CHANGE_SONG_FLAG = False
         CHANGE_PLAYLIST_FLAG = False
-    return PREV_POWER_STATE, CHANGE_SONG_FLAG, CHANGE_PLAYLIST_FLAG, current_playlist, current_song
+    return PREV_POWER_STATE, CHANGE_SONG_FLAG, CHANGE_PLAYLIST_FLAG, current_playlist, current_song, played_song_list
